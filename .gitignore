@@ -130,5 +130,6 @@ dmypy.json
 
 # Personal
 players.csv
-encounters/
-!encounters/_example.csv
+/encounters/*
+!/encounters/_example.csv
+.idea/
