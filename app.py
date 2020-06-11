@@ -1,3 +1,6 @@
+# Load File/Directory Handlers
+import pathlib
+
 # Load GUI System
 from tkinter import *
 
@@ -246,7 +249,12 @@ class EncounterSelection(Frame):
 
         encounters = game_tracker.get_encounters()
         for encounter in encounters:
-            name = encounter.replace(".csv", "").replace("-", " ")
+            path = str(encounter)
+            if isinstance(encounter, pathlib.WindowsPath):
+                file = path.split('\\')
+            elif isinstance(encounter, pathlib.PosixPath):
+                file = path.split('/')
+            name = file[len(file)-1].replace(".csv", "").replace("-", " ")
             button = Button(self.master, text=name, font=baseFont)
             button['command'] = lambda encounter=encounter: self.set_encounter(encounter)
             button.pack(fill=X)

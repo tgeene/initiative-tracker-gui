@@ -1,6 +1,5 @@
 # Load File/Directory Handlers
-from os import listdir
-from os.path import isfile, join
+from pathlib import Path
 
 # Load Randomizer
 from random import randrange
@@ -16,15 +15,17 @@ class GameTracker:
     _hold_list = []
 
     def __init__(self):
+        self._script_path = Path(__file__).parent.absolute()
         pass
 
     def get_encounters(self):
         # Return List of Files in Directory
-        return [f for f in listdir("encounters") if isfile(join("encounters", f))]
+        files = [x for x in Path(self._script_path / "encounters").glob('**/*') if x.is_file()]
+        return files
 
     def set_encounter(self, file_name):
         # Open File
-        efile = open("encounters/" + file_name, 'r')
+        efile = open(file_name, 'r')
 
         # Skip File Labels
         next(efile)
@@ -53,7 +54,7 @@ class GameTracker:
         players = []
 
         # Open Players File
-        pfile = open("players.csv", 'r')
+        pfile = open(self._script_path / 'players.csv', 'r')
 
         # Skip File Labels
         next(pfile)
