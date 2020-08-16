@@ -19,17 +19,25 @@ class AddCreature(Frame):
         self.master = master
         self.winfo_toplevel().title("Add Creature")
 
+        # Create Top Frame
+        self._topFrame = Frame(self.master)
+        self._topFrame.pack()
+
+        # Create Bottom Frame
+        self._bottomFrame = Frame(self.master)
+        self._bottomFrame.pack(fill=X, side=BOTTOM, pady=(10,0))
+
         # Load Contents of Window
         self.render_options()
 
     def render_options(self):
         # Add Top Text to Window
-        self._title = Label(self.master, text="Create Creature", font=titleFont)
+        self._title = Label(self._topFrame, text="Create Creature", font=titleFont)
         self._title.pack(pady=(10,10))
 
         # Make New Creature Frame
-        creatureFrame = Frame(self.master)
-        creatureFrame.pack(pady=(10,10))
+        creatureFrame = Frame(self._topFrame)
+        creatureFrame.pack(pady=(10,10), padx=(10,10))
 
         # Make Input Label
         name_label = Label(creatureFrame, text="Creature Name", font=baseFont)
@@ -40,8 +48,12 @@ class AddCreature(Frame):
         self._entry.pack(side=LEFT, padx=(10, 0))
 
         # Button to Submit Form
-        button = Button(self.master, text="Add Creature", font=baseFont)
+        button = Button(self._bottomFrame, text="Add Creature", font=baseFont)
         button['command'] = lambda: self._add()
+        button.pack(fill=X)
+
+        button = Button(self._bottomFrame, text="Cancel", font=baseFont)
+        button['command'] = lambda: self._close()
         button.pack(fill=X)
 
     def _add(self):
@@ -50,13 +62,16 @@ class AddCreature(Frame):
             # Add New Creature Name to Initiative as Current
             game_tracker.add(creature_name)
 
-            # Close Current Window
-            self.master.destroy()
+        self._close()
 
-            # Open Game Tracker Window
-            game_window = Tk()
-            gw = InitTracker(master=game_window)
-            gw.mainloop()
+    def _close(self):
+        # Close Current Window
+        self.master.destroy()
+
+        # Open Game Tracker Window
+        game_window = Tk()
+        gw = InitTracker(master=game_window)
+        gw.mainloop()
 
 
 class InsertSelection(Frame):
@@ -83,11 +98,18 @@ class InsertSelection(Frame):
             button['command'] = lambda key=key: self._insert(key)
             button.pack(fill=X)
             key += 1
+
+        button = Button(self.master, text="Cancel", font=baseFont)
+        button['command'] = lambda: self._close()
+        button.pack(fill=X)
     
     def _insert(self, key):
         # Move Creature from Hold List to Initiative as Current
         game_tracker.insert(key)
 
+        self._close()
+
+    def _close(self):
         # Close Current Window
         self.master.destroy()
 
@@ -122,7 +144,7 @@ class InitTracker(Frame):
 
         # Create Frame 5
         self._bottomFrame = Frame(self.master)
-        self._bottomFrame.pack(side=BOTTOM, pady=(10,0))
+        self._bottomFrame.pack(fill=X, side=BOTTOM, pady=(10,0))
 
         # Render Info Displays
         self.render_text_frames()
@@ -163,27 +185,27 @@ class InitTracker(Frame):
         # Add Button to Bottom Frame
         next_button = Button(self._bottomFrame, text="Next Character", font=baseFont)
         next_button['command'] = lambda: self._next()
-        next_button.pack(side=LEFT)
+        next_button.pack(fill=X)
 
         # Add Button to Bottom Frame
         hold_button = Button(self._bottomFrame, text="Hold Initiative", font=baseFont)
         hold_button['command'] = lambda: self._hold()
-        hold_button.pack(side=LEFT)
+        hold_button.pack(fill=X)
 
         # Add Button to Bottom Frame
         remove_button = Button(self._bottomFrame, text="Remove Character", font=baseFont)
         remove_button['command'] = lambda: self._remove()
-        remove_button.pack(side=LEFT)
+        remove_button.pack(fill=X)
 
         # Add Button to Bottom Frame
         insert_button = Button(self._bottomFrame, text="Insert Into Initiative", font=baseFont)
         insert_button['command'] = lambda: self._insert()
-        insert_button.pack(side=LEFT)
+        insert_button.pack(fill=X)
 
         # Add Button to Bottom Frame
         add_button = Button(self._bottomFrame, text="Add Character", font=baseFont)
         add_button['command'] = lambda: self._add()
-        add_button.pack(side=LEFT)
+        add_button.pack(fill=X)
 
     def _next(self):
         # Move to Next Creature
@@ -242,19 +264,27 @@ class PlayerInit(Frame):
         self.master = master
         self.winfo_toplevel().title("Player Initiative")
 
+        # Create Top Frame
+        self._topFrame = Frame(self.master)
+        self._topFrame.pack()
+
+        # Create Bottom Frame
+        self._bottomFrame = Frame(self.master)
+        self._bottomFrame.pack(fill=X, side=BOTTOM, pady=(10,0))
+
         # Render Player Init Form
         self.render_form()
 
     def render_form(self):
         # Add Top Text to Window
-        self._title = Label(self.master, text="Player Initiative", font=titleFont)
+        self._title = Label(self._topFrame, text="Player Initiative", font=titleFont)
         self._title.pack(pady=(10, 10))
 
         # Get List of Players from File
         self._players = game_tracker.get_players()
         for player in self._players:
             # Make Input Frame
-            player_frame = Frame(self.master)
+            player_frame = Frame(self._topFrame)
             player_frame.pack(pady=(10,10), padx=(10,10))
 
             # Add Text to Frame
@@ -266,7 +296,7 @@ class PlayerInit(Frame):
             self._entries[player['name']].pack(side=LEFT, padx=(10,0))
 
         # Add Button to Process Form
-        button = Button(self.master, text="Run Encounter", font=baseFont)
+        button = Button(self._bottomFrame, text="Run Encounter", font=baseFont)
         button['command'] = lambda: self.run_encounter()
         button.pack(fill=X)
 
